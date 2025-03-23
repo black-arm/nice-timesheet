@@ -1,0 +1,17 @@
+= Note
+
+== Todo
+
+* Trovare una libreria per unit-test +
+Api suggerita da NX -> Jest +
+Indagare anche Vitest
+* Templating su issues (Github)
+
+== Comandi Utili
+
+Avviare il BE per lo sviluppo: +
+`nx serve nice-timesheet-api`
+
+== Link Utili
+
+* http://localhost:8081/docs[Swagger-ui]

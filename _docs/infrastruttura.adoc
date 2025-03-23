@@ -1,0 +1,18 @@
+= Infrastruttura
+
+== Puntamenti
+
+
+=== Porte
+
+* Proxy: +
+Per ovvi motivi, esposti su porta 80 e 443
+
+* Moduli FE: +
+esposti sulle porte 3xxx
+
+* Moduli BE: +
+esposti sulle porte 80xx
+
+* Database & storage: +
+esposti sulle porte 90xx
