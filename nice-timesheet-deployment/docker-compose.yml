@@ -1,0 +1,113 @@
+services:
+
+  # TODO: nginx reverse proxy
+  # TODO: Keycloak config cli
+
+  nice-timesheet-keycloak:
+    image: quay.io/keycloak/keycloak:23.0.0
+    container_name: "nice_timesheet_keycloak"
+    depends_on:
+      nice-timesheet-postgres:
+        condition: service_healthy
+    environment:
+      # Imposta le credenziali di root
+      KEYCLOAK_ADMIN: "keycloak_usr"
+      KEYCLOAK_ADMIN_PASSWORD: "keycloak_pwd"
+      # Abilita gli endpoint per il monitoring e le metriche
+      # http://localhost:8080/health/ready
+      # http://localhost:8080/metrics
+      KC_HEALTH_ENABLED: "true"
+      KC_METRICS_ENABLED: "true"
+      # Necessarie per PROD
+      # Fissa l'indirizzo che verrà usato da keycloak nell'issuer e per evitare problemi di clustering
+      # Inoltre, imposta un diverso indirizzo per la console di amministrazione
+      #      KC_HOSTNAME_URL: "https://sso.luzzetti.dev"
+      #      KC_HOSTNAME_ADMIN_URL: "http://127.0.0.1:8080"
+      # ALT-2 - Abilita http quando dietro un proxy con TLS termination
+      #      KC_PROXY: edge
+      #      KC_HTTP_ENABLED: true
+      #      KC_HOSTNAME_STRICT: false
+      # KC_HTTP_PORT: "9002"
+      # Abilita l'uso di un DB esterno
+      KC_DB: postgres
+      KC_DB_SCHEMA: public
+      KC_DB_URL_HOST: nice-timesheet-postgres
+      KC_DB_URL_DATABASE: keycloak
+      KC_DB_USERNAME: "postgres_usr"
+      KC_DB_PASSWORD: "postgres_pwd"
+    command:
+      - "start-dev"
+    networks:
+      - nice-timesheet-network
+    ports:
+      - "8080:8080"
+    deploy:
+      resources:
+        limits:
+          # Keycloak calcola dinamicamente la dimensione dell'heap
+          # in base alla memoria totale del container;
+          # Quindi, è necessario impostare il limite di memoria per il container.
+          # https://www.keycloak.org/server/containers
+          memory: 2G
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080;echo -e \"GET /health/ready HTTP/1.1\r\nhost: http://localhost\r\nConnection: close\r\n\r\n\" >&3;grep \"HTTP/1.1 200 OK\" <&3" ]
+      interval: 5s
+      start_period: 20s
+      start_interval: 20s
+      timeout: 5s
+      retries: 5
+
+  nice-timesheet-postgres:
+    container_name: "nice_timesheet_postgres"
+    image: postgres:17.2
+    environment:
+      POSTGRES_USER: "postgres_usr"
+      POSTGRES_PASSWORD: "postgres_pwd"
+      POSTGRES_MULTIPLE_DATABASES: "keycloak,nice_timesheet"
+    networks:
+      - nice-timesheet-network
+    ports:
+      - "9001:5432"
+    volumes:
+      - "nice_timesheet_postgres_init_scripts:/docker-entrypoint-initdb.d/:ro"
+      - "nice_timesheet_postgres_data:/var/lib/postgresql/data/"
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d keycloak -U postgres_usr" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+
+# TODO: Keycloak
+
+# TODO: Container BE
+
+# TODO: Container FE
+
+volumes:
+
+  # Contains the script to initialize the DB
+  nice_timesheet_postgres_init_scripts:
+    name: nice_timesheet_postgres_init_scripts
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./_postgres/sql
+
+  # Contains the DB data. Removing this volume should destroy the whole database
+  nice_timesheet_postgres_data:
+    name: nice_timesheet_postgres_data
+    driver: local
+
+networks:
+  nice-timesheet-network:
+    name: nice_timesheet_network
+    driver: bridge
+    external: false
