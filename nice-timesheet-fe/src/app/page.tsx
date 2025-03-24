@@ -1,11 +1,16 @@
+'use client';
 import {Button} from "@/components/ui/button";
+import {useTheme} from "next-themes";
 
 export default function Home() {
-  return (<>
+
+    const {setTheme, theme} = useTheme()
+
+    return (<>
           <h1 className="font-bold underline">
               Hello world!
           </h1>
-          <Button>
+          <Button onClick={() => theme === 'light' ? setTheme('dark') : setTheme('light')}>
                 Click me!
           </Button>
       </>
