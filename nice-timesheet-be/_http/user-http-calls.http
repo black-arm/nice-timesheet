@@ -1,0 +1,15 @@
+### Create a random user
+POST http://localhost:8091/api/1.0/users:createRandom
+
+### Create a random user
+POST http://localhost:8091/api/1.0/users
+Content-Type: application/json
+
+{
+  "firstName": "Christian",
+  "lastName": "Luzzetti",
+  "email": "christian.luzzetti@gmail.com"
+}
+
+### Get user details
+GET http://localhost:8091/api/1.0/users/063ee9bd-6992-4c0d-9703-a2e6b58ee848

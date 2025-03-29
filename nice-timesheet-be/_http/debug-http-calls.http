@@ -1,0 +1,5 @@
+### Debug Info
+GET http://localhost:8091/api/1.0/debug
+
+### Echo
+POST http://localhost:8091/api/1.0/debug/status
