@@ -1,7 +1,7 @@
 ### Create a random user
 POST http://localhost:8091/api/1.0/users:createRandom
 
-### Create a random user
+### Create a user
 POST http://localhost:8091/api/1.0/users
 Content-Type: application/json
 
