@@ -1,7 +1,27 @@
+
 services:
 
   # TODO: nginx reverse proxy
-  # TODO: Keycloak config cli
+
+  nice-timesheet-keycloak-config-cli:
+    image: adorsys/keycloak-config-cli:6.2.1-23
+    container_name: "nice_timesheet_keycloak_config_cli"
+    depends_on:
+      nice-timesheet-keycloak:
+        condition: service_healthy
+    environment:
+      KEYCLOAK_URL: http://nice-timesheet-keycloak:8080/
+      KEYCLOAK_USER: "keycloak_usr"
+      KEYCLOAK_PASSWORD: "keycloak_pwd"
+      KEYCLOAK_AVAILABILITYCHECK_ENABLED: true
+      KEYCLOAK_AVAILABILITYCHECK_TIMEOUT: 120s
+      KEYCLOAK_SSLVERIFY: false
+      IMPORT_FILES_LOCATIONS: '/config/*'
+      LOGGING_LEVEL_ROOT: INFO
+    networks:
+      - nice-timesheet-network
+    volumes:
+      - "keycloak_config_cli_conf:/config"
 
   nice-timesheet-keycloak:
     image: quay.io/keycloak/keycloak:23.0.0
@@ -84,13 +104,20 @@ services:
       retries: 5
 
 
-# TODO: Keycloak
-
 # TODO: Container BE
 
 # TODO: Container FE
 
 volumes:
+
+  # Contains the files to autoconfigure keycloak
+  keycloak_config_cli_conf:
+    name: nice_timesheet_keycloak_config_cli_conf
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./_keycloak_config_cli/conf
 
   # Contains the script to initialize the DB
   nice_timesheet_postgres_init_scripts:

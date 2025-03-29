@@ -15,3 +15,14 @@ Avviare il BE per lo sviluppo: +
 == Link Utili
 
 * http://localhost:8081/docs[Swagger-ui]
+
+
+
+== Extra
+- Typeorm - tight-integration con nestJS +
+`npm install --save @nestjs/typeorm typeorm pg`
+
+- Configs
+`npm i @nestjs/config`
+
+
