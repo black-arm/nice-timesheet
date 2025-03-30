@@ -1,20 +1,29 @@
-import { Controller, Get, Post } from '@nestjs/common';
-import { DebugService } from './debug.service';
+import {Controller, Get, Post, Request, UseGuards} from '@nestjs/common';
+import {DebugService} from './debug.service';
+import {JwtAuthGuard} from "../auth-configs/jwt-auth.guard";
+import {Principal} from "../auth-configs/principal.decorator";
+import {TimesheetUser} from "../auth-configs/principal.model";
 
 @Controller('api/1.0/debug')
 export class DebugController {
 
-  constructor(private readonly debugService: DebugService) {
-  }
+    constructor(private readonly debugService: DebugService) {
+    }
 
-  @Get()
-  getDebugInformation() {
-    return this.debugService.readDebugInformation();
-  }
+    @Get()
+    getDebugInformation() {
+        return this.debugService.readDebugInformation();
+    }
 
-  @Post('status')
-  postDebugInformation() {
-    return this.debugService.readDebugInformation();
-  }
+    @UseGuards(JwtAuthGuard)
+    @Post('status')
+    postDebugInformation(@Principal() principal: TimesheetUser,
+                         @Request() request: any) {
+
+        return {
+            principal: principal,
+            details: this.debugService.readDebugInformation()
+        };
+    }
 
 }
