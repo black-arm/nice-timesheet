@@ -1,7 +1,28 @@
-
 services:
 
-  # TODO: nginx reverse proxy
+  nice-timesheet-nginx:
+    image: nginx:1.27-alpine
+    container_name: "nice_timesheet_nginx"
+    depends_on:
+      nice-timesheet-keycloak:
+        condition: service_healthy
+    networks:
+      - nice-timesheet-network
+    ports:
+      - "443:443"
+    volumes:
+      - "nice_timesheet_nginx_conf:/etc/nginx/conf.d"
+      - "nice_timesheet_nginx_certs:/etc/nginx/certs"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -k --fail https://sso.nice-timesheet.io || exit 1" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   nice-timesheet-keycloak-config-cli:
     image: adorsys/keycloak-config-cli:6.2.1-23
@@ -41,12 +62,12 @@ services:
       # Necessarie per PROD
       # Fissa l'indirizzo che verrà usato da keycloak nell'issuer e per evitare problemi di clustering
       # Inoltre, imposta un diverso indirizzo per la console di amministrazione
-      #      KC_HOSTNAME_URL: "https://sso.luzzetti.dev"
+      KC_HOSTNAME_URL: "https://sso.nice-timesheet.io"
       #      KC_HOSTNAME_ADMIN_URL: "http://127.0.0.1:8080"
       # ALT-2 - Abilita http quando dietro un proxy con TLS termination
-      #      KC_PROXY: edge
-      #      KC_HTTP_ENABLED: true
-      #      KC_HOSTNAME_STRICT: false
+      KC_PROXY: edge
+      KC_HTTP_ENABLED: true
+      KC_HOSTNAME_STRICT: false
       # KC_HTTP_PORT: "9002"
       # Abilita l'uso di un DB esterno
       KC_DB: postgres
@@ -56,7 +77,7 @@ services:
       KC_DB_USERNAME: "postgres_usr"
       KC_DB_PASSWORD: "postgres_pwd"
     command:
-      - "start-dev"
+      - "start"
     networks:
       - nice-timesheet-network
     ports:
@@ -109,6 +130,24 @@ services:
 # TODO: Container FE
 
 volumes:
+
+  # Contains the load-balancing configurations for nginx
+  nice_timesheet_nginx_conf:
+    name: nice_timesheet_nginx_config
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./_nginx/conf
+
+  # Contains the certificates for SSL-termination on nginx
+  nice_timesheet_nginx_certs:
+    name: nice_timesheet_nginx_certs
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./_nginx/certs
 
   # Contains the files to autoconfigure keycloak
   keycloak_config_cli_conf:
