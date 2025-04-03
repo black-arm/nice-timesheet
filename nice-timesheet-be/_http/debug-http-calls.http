@@ -1,0 +1,6 @@
+### Debug Info
+GET https://api.nice-timesheet.io/api/1.0/debug
+
+### Echo
+POST https://api.nice-timesheet.io/api/1.0/debug/status
+Authorization: Bearer {{$auth.token("token")}}

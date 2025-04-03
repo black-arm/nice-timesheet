@@ -1,0 +1,26 @@
+{
+  "enabled": true,
+  "realm": "nice-timesheet-realm",
+  "roles": {
+    "realm": [
+      {
+        "name": "timesheet-superadmin",
+        "description": "The superadmin role, to do everything",
+        "composite": false,
+        "clientRole": false
+      },
+      {
+        "name": "timesheet-admin",
+        "description": "The admin role, to access the administration area",
+        "composite": false,
+        "clientRole": false
+      },
+      {
+        "name": "timesheet-user",
+        "description": "The user role, to access the user area",
+        "composite": false,
+        "clientRole": false
+      }
+    ]
+  }
+}

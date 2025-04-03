@@ -15,3 +15,32 @@ Avviare il BE per lo sviluppo: +
 == Link Utili
 
 * http://localhost:8081/docs[Swagger-ui]
+
+== Extra
+
+- Typeorm - tight-integration con nestJS +
+`npm install --save @nestjs/typeorm typeorm pg`
+
+- Configs
+`npm i @nestjs/config`
+
+== Debug di problemi relativi a Password
+
+A quanto pare sta cosa non è documentata da nessuna cazzo di parte, ma se sorge la necessità di debuggare problemi di autenticazione relativi a passport, è necessario inserire quanto segue dentro alla guard. +
+
+(Dio ve fulmini tutti)
+
+----
+    handleRequest(err: any, user: any, info: any) {
+        if (err) {
+            Logger.error(`${err.message}`);
+        }
+        if (info) {
+            Logger.warn(`${info.message || info.toString()}`);
+        }
+        if (!user) {
+            Logger.error('authentication failed');
+        }
+        return user;
+    }
+----

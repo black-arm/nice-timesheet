@@ -1,0 +1,54 @@
+{
+  "enabled": true,
+  "realm": "nice-timesheet-realm",
+  "users": [
+    {
+      "username": "timesheet_usr",
+      "email": "timesheet_usr@no.op",
+      "enabled": true,
+      "firstName": "Nome",
+      "lastName": "Qualunque",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "timesheet_pwd"
+        }
+      ],
+      "realmRoles": [
+        "timesheet-user"
+      ]
+    },
+    {
+      "username": "timesheet_admin",
+      "email": "timesheet_admin@no.op",
+      "enabled": true,
+      "firstName": "Adminis",
+      "lastName": "Trator",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "timesheet_pwd"
+        }
+      ],
+      "realmRoles": [
+        "timesheet-admin"
+      ]
+    },
+    {
+      "username": "timesheet_super",
+      "email": "timesheet_superadmin@no.op",
+      "enabled": true,
+      "firstName": "Super",
+      "lastName": "Admin",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "timesheet_pwd"
+        }
+      ],
+      "realmRoles": [
+        "timesheet-superadmin"
+      ]
+    }
+  ]
+}
