@@ -1,11 +1,37 @@
 services:
 
+  nice-timesheet-nginx:
+    image: nginx:1.27-alpine
+    container_name: "nice_timesheet_nginx"
+    depends_on:
+      nice-timesheet-be:
+        condition: service_healthy
+    networks:
+      nice-timesheet-network:
+        aliases:
+          - sso.nice-timesheet.io
+    ports:
+      - "443:443"
+    volumes:
+      - "nice_timesheet_nginx_conf:/etc/nginx/conf.d"
+      - "nice_timesheet_nginx_certs:/etc/nginx/certs"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -k --fail https://localhost:443 || exit 1" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   nice-timesheet-be:
     build:
       context: ../nice-timesheet-be
     container_name: "nice_timesheet_be"
     depends_on:
-      nice-timesheet-nginx:
+      nice-timesheet-keycloak:
         condition: service_healthy
     environment:
       DB_HOST: nice-timesheet-postgres
@@ -31,32 +57,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
-
-  nice-timesheet-nginx:
-    image: nginx:1.27-alpine
-    container_name: "nice_timesheet_nginx"
-    depends_on:
-      nice-timesheet-keycloak:
-        condition: service_healthy
-    networks:
-      nice-timesheet-network:
-        aliases:
-          - sso.nice-timesheet.io
-    ports:
-      - "443:443"
-    volumes:
-      - "nice_timesheet_nginx_conf:/etc/nginx/conf.d"
-      - "nice_timesheet_nginx_certs:/etc/nginx/certs"
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-    restart: unless-stopped
-    healthcheck:
-      test: [ "CMD-SHELL", "curl -k --fail https://localhost:443 || exit 1" ]
-      interval: 5s
-      timeout: 5s
-      retries: 5
 
   nice-timesheet-keycloak-config-cli:
     image: adorsys/keycloak-config-cli:6.2.1-23
