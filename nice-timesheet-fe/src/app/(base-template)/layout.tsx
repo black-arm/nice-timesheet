@@ -31,9 +31,9 @@ const BaseTemplateLayout: React.FC<{ children: React.ReactNode }> = ({ children 
     const title = pathToTitleMap[currentPath] || "Default Title"; // Default title if path not found
 
     return (
-        <div className="flex">
+        <div className="flex w-full">
             <NTSidebar links={links}></NTSidebar>
-            <main>
+            <main className="w-full">
                 <NTTitlePage title={title} />
                 {children}
             </main>
