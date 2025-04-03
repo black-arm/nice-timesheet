@@ -27,7 +27,7 @@
       "credentials": [
         {
           "type": "password",
-          "value": "scrooge_pwd"
+          "value": "timesheet_pwd"
         }
       ],
       "realmRoles": [

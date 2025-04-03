@@ -1,5 +1,37 @@
 services:
 
+  nice-timesheet-be:
+    build:
+      context: ../nice-timesheet-be
+    container_name: "nice_timesheet_be"
+    depends_on:
+      nice-timesheet-nginx:
+        condition: service_healthy
+    environment:
+      DB_HOST: nice-timesheet-postgres
+      DB_PORT: 5432
+      DB_NAME: nice_timesheet
+      DB_USERNAME: postgres_usr
+      DB_PASSWORD: postgres_pwd
+      DB_SYNC: true
+      KEYCLOAK_URL: https://sso.nice-timesheet.io
+      KEYCLOAK_REALM: nice-timesheet-realm
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
+    networks:
+      - nice-timesheet-network
+    ports:
+      - "8091:8091"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "wget --spider -q http://127.0.0.1:8091/api/1.0/debug || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
   nice-timesheet-nginx:
     image: nginx:1.27-alpine
     container_name: "nice_timesheet_nginx"
@@ -7,7 +39,9 @@ services:
       nice-timesheet-keycloak:
         condition: service_healthy
     networks:
-      - nice-timesheet-network
+      nice-timesheet-network:
+        aliases:
+          - sso.nice-timesheet.io
     ports:
       - "443:443"
     volumes:
@@ -19,7 +53,7 @@ services:
           memory: 512M
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD-SHELL", "curl -k --fail https://sso.nice-timesheet.io || exit 1" ]
+      test: [ "CMD-SHELL", "curl -k --fail https://localhost:443 || exit 1" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -79,7 +113,7 @@ services:
     command:
       - "start"
     networks:
-      - nice-timesheet-network
+      - "nice-timesheet-network"
     ports:
       - "8080:8080"
     deploy:

@@ -5,9 +5,26 @@ import {AuthGuard} from '@nestjs/passport';
 export class JwtAuthGuard extends AuthGuard('jwt') {
 
     canActivate(context: ExecutionContext) {
-        // Add your custom authentication logic here
-        // No-op. Al momento lo tengo per riuscire a debuggare
-        return super.canActivate(context);
+        return super.canActivate(context); // Call the Passport logic
     }
+
+    // DO NOT REMOVE!!!
+    // This is basically UNDOCUMENTED, but it seems the only way to debug
+    // authentication errors from 'passport' is to "override" this function
+    // to intercept and read the error
+
+    // handleRequest(err: any, user: any, info: any) {
+    //     if (err) {
+    //         Logger.error(`Authentication error: ${err.message}`);
+    //     }
+    //     if (info) {
+    //         Logger.warn(`Authentication info: ${info.message || info.toString()}`);
+    //     }
+    //     if (!user) {
+    //         Logger.error('No user found during authentication');
+    //     }
+    //     return user;
+    // }
+
 
 }

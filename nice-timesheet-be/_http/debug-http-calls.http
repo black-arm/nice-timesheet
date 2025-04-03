@@ -1,6 +1,6 @@
 ### Debug Info
-GET http://localhost:8091/api/1.0/debug
+GET https://api.nice-timesheet.io/api/1.0/debug
 
 ### Echo
-POST http://localhost:8091/api/1.0/debug/status
+POST https://api.nice-timesheet.io/api/1.0/debug/status
 Authorization: Bearer {{$auth.token("token")}}

@@ -1,4 +1,4 @@
-import {Controller, Get, Post, Request, UseGuards} from '@nestjs/common';
+import {Controller, Get, Logger, Post, Request, UseGuards} from '@nestjs/common';
 import {DebugService} from './debug.service';
 import {JwtAuthGuard} from "../auth-configs/jwt-auth.guard";
 import {Principal} from "../auth-configs/principal.decorator";
@@ -12,6 +12,7 @@ export class DebugController {
 
     @Get()
     getDebugInformation() {
+        Logger.debug('Health check endpoint pinged');
         return this.debugService.readDebugInformation();
     }
 
