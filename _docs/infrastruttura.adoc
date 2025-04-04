@@ -16,3 +16,7 @@ esposti sulle porte 80xx
 
 * Database & storage: +
 esposti sulle porte 90xx
+
+
+=== Keycloak Admin Client Integration
+Il BE utilizza `https://www.npmjs.com/package/@keycloak/keycloak-admin-client` per connettersi e pilotare KC.

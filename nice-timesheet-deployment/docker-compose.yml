@@ -42,6 +42,8 @@ services:
       DB_SYNC: true
       KEYCLOAK_URL: http://sso.nice-timesheet.io:8080
       KEYCLOAK_REALM: nice-timesheet-realm
+      KEYCLOAK_ADMIN_CLIENT_ID: be-client-admin
+      KEYCLOAK_ADMIN_CLIENT_SECRET: ySJ0ynQCtHWO23u1OZnukgBjrzOv5ca5
     networks:
       - nice-timesheet-network
     ports:
