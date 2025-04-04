@@ -8,8 +8,6 @@ services:
         condition: service_healthy
     networks:
       nice-timesheet-network:
-        aliases:
-          - sso.nice-timesheet.io
     ports:
       - "443:443"
     volumes:
@@ -40,7 +38,7 @@ services:
       DB_USERNAME: postgres_usr
       DB_PASSWORD: postgres_pwd
       DB_SYNC: true
-      KEYCLOAK_URL: https://sso.nice-timesheet.io
+      KEYCLOAK_URL: http://sso.nice-timesheet.io:8080
       KEYCLOAK_REALM: nice-timesheet-realm
       NODE_TLS_REJECT_UNAUTHORIZED: 0
     networks:
@@ -96,7 +94,7 @@ services:
       # Necessarie per PROD
       # Fissa l'indirizzo che verrà usato da keycloak nell'issuer e per evitare problemi di clustering
       # Inoltre, imposta un diverso indirizzo per la console di amministrazione
-      KC_HOSTNAME_URL: "https://sso.nice-timesheet.io"
+      KC_HOSTNAME: "sso.nice-timesheet.io"
       #      KC_HOSTNAME_ADMIN_URL: "http://127.0.0.1:8080"
       # ALT-2 - Abilita http quando dietro un proxy con TLS termination
       KC_PROXY: edge
@@ -113,7 +111,9 @@ services:
     command:
       - "start"
     networks:
-      - "nice-timesheet-network"
+      nice-timesheet-network:
+        aliases:
+          - sso.nice-timesheet.io
     ports:
       - "8080:8080"
     deploy:
