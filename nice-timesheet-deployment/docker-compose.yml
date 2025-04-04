@@ -4,7 +4,7 @@ services:
     image: nginx:1.27-alpine
     container_name: "nice_timesheet_nginx"
     depends_on:
-      nice-timesheet-be:
+      nice-timesheet-keycloak:
         condition: service_healthy
     networks:
       nice-timesheet-network:
@@ -25,6 +25,8 @@ services:
       retries: 5
 
   nice-timesheet-be:
+    profiles:
+      - backend
     build:
       context: ../nice-timesheet-be
     container_name: "nice_timesheet_be"

@@ -17,7 +17,8 @@ https://github.com/black-arm/nice-timesheet
 
 * Keycloak: https://sso.nice-timesheet.io/
 
-## Comandi
+## Comandi Docker & Profili
 
-* Per lanciare normalmente il compose: `docker compose up -d`
-* Per lanciare il compose, forzando la build del backend: `docker compose up -d --build`
+* Lanciare il compose SENZA il be: `docker compose up -d `
+* Lanciare il compose CON il be: `docker compose --profile backend up -d `
+* lanciare il compose CON il be aggiornato: `docker compose --profile backend up -d --build`
