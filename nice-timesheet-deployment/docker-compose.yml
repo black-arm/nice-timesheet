@@ -40,7 +40,6 @@ services:
       DB_SYNC: true
       KEYCLOAK_URL: http://sso.nice-timesheet.io:8080
       KEYCLOAK_REALM: nice-timesheet-realm
-      NODE_TLS_REJECT_UNAUTHORIZED: 0
     networks:
       - nice-timesheet-network
     ports:
