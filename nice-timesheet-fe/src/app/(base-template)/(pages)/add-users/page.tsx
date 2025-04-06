@@ -1,7 +1,9 @@
-import React, {ReactElement} from 'react';
+'use client';
+import React, {ReactElement, useState} from 'react';
 import {UserCardProps} from "@/app/(base-template)/(pages)/add-users/model";
 import UserCard from './components/user-card';
 import AddUsersDialog from "@/app/(base-template)/(pages)/add-users/components/AddUsersDialog";
+import {Button} from "@/shared/components/ui/button";
 
 const users: UserCardProps[] = [
     {
@@ -28,15 +30,20 @@ const users: UserCardProps[] = [
 ]
 
 const AddUsers: React.FC = () => {
+
+    const [openDialog, setOpenDialog] = useState(false);
+
   return (
-    <>
-        <AddUsersDialog />
-        <div className="p-12">
+        <div className="px-12 mt-4">
+            <AddUsersDialog open={openDialog}
+                            close={() => setOpenDialog(false)} />
+            <div className="flex justify-end">
+                <Button onClick={() => setOpenDialog(true)}>Add Users</Button>
+            </div>
             { users.map((user: UserCardProps, index): ReactElement  => (
                 <UserCard {...user} key={index} />
             ))}
         </div>
-    </>
   );
 };
 
