@@ -3,11 +3,11 @@ import { Input } from '@/shared/components/ui/input';
 import {NTDialog} from "@/shared/components/ui/NTDialog";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/shared/components/ui/form";
 import {useForm} from "react-hook-form";
-import {z, ZodAny, ZodDate, ZodOptional, ZodString} from "zod";
+import {z, ZodDate, ZodOptional, ZodString} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Button} from "@/shared/components/ui/button";
 import {useEffect} from "react";
-import {DatePicker} from "@/shared/components/ui/datepicker";
+import { DateTimePicker} from "@/shared/components/ui/calendar";
 
 
 type UserFormSchema = {
@@ -98,7 +98,12 @@ const AddUsersDialog =
                                                <FormItem className="w-full">
                                                    <FormLabel>Birthdate</FormLabel>
                                                     <FormControl>
-                                                        <DatePicker onChange={field.onChange} value={field.value} />
+                                                        <DateTimePicker granularity='day'
+                                                                        displayFormat={{ hour24: 'dd/MM/yyyy' }}
+                                                            className='w-full'
+                                                                        placeholder='dd/MM/yyyy'
+                                                            value={field.value} onChange={field.onChange} />
+                                                        {/*<DatePicker onChange={field.onChange} value={field.value} />*/}
                                                     </FormControl>
                                                    <FormMessage />
                                                </FormItem>
