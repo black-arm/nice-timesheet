@@ -32,12 +32,14 @@ export const NTTitlePage = (
                 </BreadcrumbList>
             </Breadcrumb>
         </div>
-        <Button size="icon" variant="outline" onClick={() => theme === 'dark' ?
-            setTheme('light') :
-            setTheme('dark')}
-        >
-            <Sun></Sun>
-        </Button>
+        <div>
+            <Button size="icon" variant="outline" onClick={() => theme === 'dark' ?
+                setTheme('light') :
+                setTheme('dark')}
+            >
+                <Sun></Sun>
+            </Button>
+        </div>
     </div>
 
   );
