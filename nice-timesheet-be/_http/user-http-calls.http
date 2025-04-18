@@ -6,9 +6,9 @@ POST {{host}}/api/1.0/users
 Content-Type: application/json
 
 {
-  "firstName": "Christian",
+  "firstName": "Cheeristian",
   "lastName": "Luzzetti",
-  "email": "christian.luzzetti@gmail.com"
+  "email": "christian.luzzettoi@gmail.com"
 }
 
 ### Get user details

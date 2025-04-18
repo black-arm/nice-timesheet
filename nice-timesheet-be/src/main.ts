@@ -28,7 +28,6 @@ async function bootstrap() {
     SwaggerModule.setup('docs/api', app, documentFactory);
     /* .Swagger Configs da spostare */
 
-
     await app.listen(process.env.PORT ?? 8091);
 
     Logger.log('Server started');

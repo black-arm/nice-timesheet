@@ -1,5 +1,5 @@
 import {Injectable} from '@nestjs/common';
-import {Repository} from 'typeorm';
+import {DataSource, Repository} from 'typeorm';
 import {User} from './user.entity';
 import {InjectRepository} from '@nestjs/typeorm';
 import {KeycloakAdapterService} from "./user.keycloak";
@@ -8,6 +8,7 @@ import {KeycloakAdapterService} from "./user.keycloak";
 export class UserService {
 
     constructor(
+        private readonly dataSource: DataSource,
         @InjectRepository(User) private readonly userRepository: Repository<User>,
         private readonly kcAdapter: KeycloakAdapterService) {
     }
@@ -21,14 +22,24 @@ export class UserService {
             email: request.email,
         });
 
-        // TODO: Controllo sull'unicità dello username
-        // O magari delegare la registrazione a KC
+        // Ma n'annotazione per sta monnezza, no eh?
+        let queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
 
-        // TODO: Controllo sulla transazionalità, altrimenti si imputtana tutto
-        let localUser = await this.userRepository.save(aNewUser);
-        await this.kcAdapter.createUser(aNewUser);
+        try {
+            const localUser = await queryRunner.manager.save(aNewUser);
+            await this.kcAdapter.createUser(aNewUser);
 
-        return localUser;
+            await queryRunner.commitTransaction();
+            return localUser;
+        } catch (e) {
+            await queryRunner.rollbackTransaction();
+            throw e;
+        } finally {
+            await queryRunner.release();
+        }
+
     }
 
     async getUsers(pageNumber: number = 0, pageSize: number = 100) {
