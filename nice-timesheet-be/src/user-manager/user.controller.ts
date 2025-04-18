@@ -1,15 +1,13 @@
 import {Body, Controller, Get, Param, Post, Query} from '@nestjs/common';
 import {UserService} from './user.service';
+import {UserCreationRequest} from "./resources/user-creation.request";
+import {UserCreationResponse} from "./resources/user-creation.response";
+import {ApiOkResponse} from "@nestjs/swagger";
 
 @Controller('api/1.0')
 export class UserController {
 
     constructor(private readonly userService: UserService) {
-    }
-
-    @Post('users:createRandom')
-    async createRandomUser() {
-        return this.userService.createRandomUser();
     }
 
     @Get("users")
@@ -22,24 +20,15 @@ export class UserController {
         return this.userService.getUser(id);
     }
 
+    @ApiOkResponse({
+        type: UserCreationResponse,
+    })
     @Post('users')
     async createUser(@Body() request: UserCreationRequest) {
         let createdUser = await this.userService.createUser(request);
 
-        const response: UserCreationResponse = {
-            userId: createdUser.id
-        }
-        return response;
+        return new UserCreationResponse(createdUser.id);
     }
 
 }
 
-interface UserCreationRequest {
-    firstName: string;
-    lastName: string;
-    email: string;
-}
-
-interface UserCreationResponse {
-    userId: string;
-}

@@ -12,7 +12,7 @@ Content-Type: application/json
 }
 
 ### Get user details
-GET {{host}}/api/1.0/users/cdc22fa4-f604-4199-a6c0-9ac85dd72076
+GET {{host}}/api/1.0/users/2d1a5873-1f09-4043-aaa9-60ce565ef454
 
 ### List users
 GET {{host}}/api/1.0/users

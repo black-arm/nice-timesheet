@@ -48,6 +48,12 @@ export class KeycloakAdapterService {
      */
     async createUser(aNewUser: User) {
 
+        /*
+        * impostare la password così, ovviamente non è buono.
+        * Tuttavia, dato che non abbiamo ancora impostato un mail-sender, non abbiamo molte
+        * opzioni.
+         */
+
         return await this.keycloakAdminClient.users.create({
             id: aNewUser.id,
             username: aNewUser.email,
@@ -56,6 +62,13 @@ export class KeycloakAdapterService {
             lastName: aNewUser.lastName,
             emailVerified: true,
             enabled: true,
+            requiredActions: ['UPDATE_PASSWORD'],
+            credentials: [{
+                type: 'password',
+                value: 'change-me',
+                temporary: true
+            }]
+
         })
 
     }
