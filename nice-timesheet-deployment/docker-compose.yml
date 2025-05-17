@@ -1,7 +1,8 @@
 services:
 
   nice-timesheet-nginx:
-    image: nginx:1.27-alpine
+    build:
+      context: ./_nginx
     container_name: "nice_timesheet_nginx"
     depends_on:
       nice-timesheet-keycloak:
@@ -10,9 +11,6 @@ services:
       nice-timesheet-network:
     ports:
       - "443:443"
-    volumes:
-      - "nice_timesheet_nginx_conf:/etc/nginx/conf.d"
-      - "nice_timesheet_nginx_certs:/etc/nginx/certs"
     deploy:
       resources:
         limits:
@@ -60,7 +58,8 @@ services:
       retries: 3
 
   nice-timesheet-keycloak-config-cli:
-    image: adorsys/keycloak-config-cli:6.2.1-23
+    build:
+      context: ./_keycloak_config_cli
     container_name: "nice_timesheet_keycloak_config_cli"
     depends_on:
       nice-timesheet-keycloak:
@@ -76,8 +75,6 @@ services:
       LOGGING_LEVEL_ROOT: INFO
     networks:
       - nice-timesheet-network
-    volumes:
-      - "keycloak_config_cli_conf:/config"
 
   nice-timesheet-keycloak:
     image: quay.io/keycloak/keycloak:23.0.0
@@ -137,8 +134,9 @@ services:
       retries: 5
 
   nice-timesheet-postgres:
+    build:
+      context: ./_postgres
     container_name: "nice_timesheet_postgres"
-    image: postgres:17.2
     environment:
       POSTGRES_USER: "postgres_usr"
       POSTGRES_PASSWORD: "postgres_pwd"
@@ -148,7 +146,6 @@ services:
     ports:
       - "9001:5432"
     volumes:
-      - "nice_timesheet_postgres_init_scripts:/docker-entrypoint-initdb.d/:ro"
       - "nice_timesheet_postgres_data:/var/lib/postgresql/data/"
     deploy:
       resources:
@@ -162,47 +159,8 @@ services:
       retries: 5
 
 
-# TODO: Container BE
-
-# TODO: Container FE
 
 volumes:
-
-  # Contains the load-balancing configurations for nginx
-  nice_timesheet_nginx_conf:
-    name: nice_timesheet_nginx_config
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ./_nginx/conf
-
-  # Contains the certificates for SSL-termination on nginx
-  nice_timesheet_nginx_certs:
-    name: nice_timesheet_nginx_certs
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ./_nginx/certs
-
-  # Contains the files to autoconfigure keycloak
-  keycloak_config_cli_conf:
-    name: nice_timesheet_keycloak_config_cli_conf
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ./_keycloak_config_cli/conf
-
-  # Contains the script to initialize the DB
-  nice_timesheet_postgres_init_scripts:
-    name: nice_timesheet_postgres_init_scripts
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ./_postgres/sql
 
   # Contains the DB data. Removing this volume should destroy the whole database
   nice_timesheet_postgres_data:

@@ -8,7 +8,7 @@ Content-Type: application/json
 {
   "firstName": "Cheeristian",
   "lastName": "Luzzetti",
-  "email": "christian.luzzettoi@gmail.com"
+  "email": "christian.luzzetti@gmail.com"
 }
 
 ### Get user details
