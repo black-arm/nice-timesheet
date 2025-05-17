@@ -34,6 +34,7 @@ echo Tra poco dovresti essere in grado di raggiungere:
 echo https://www.nice-timesheet.io
 echo https://sso.nice-timesheet.io
 echo https://api.nice-timesheet.io
+echo https://api.nice-timesheet.io/docs/api
 echo.
 echo Premi un qualunque pulsante per stoppare i containers
 pause
